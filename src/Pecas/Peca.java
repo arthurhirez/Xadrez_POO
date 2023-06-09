@@ -28,7 +28,7 @@ public abstract class Peca implements Serializable, Movimentos{
         }        
     }
     
-    public int convertBoolCoord() {
+    public int converterBoolCoordenada() {
         return (this.bBrancas) ? -1 : 1;
     }
     

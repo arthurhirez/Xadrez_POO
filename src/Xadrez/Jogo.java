@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -42,7 +43,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         cPretas = new Conjunto();
         //tTabuleiro = new Tabuleiro(cBrancas, cPretas);//alocação do painel de desenho
         tTabuleiro = new Tabuleiro();
-        tTabuleiro.setFocusable(false);
+        tTabuleiro.setFocusable(true);
         tTabuleiro.addMouseListener(this);//Adiciona evento de mouse ao Painel de desenho
         tTabuleiro.addKeyListener(this);
         bEmJogada = false;
@@ -50,7 +51,10 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         controleMouse = -1;
         initComponents();
     }
-
+    
+    public static String testeFuncao(){
+        return "Esta funcionando porra!!!";
+    }
     // Inicializa pecas e suas posicoes na main
     public void addPeca(Peca aPeca, CoresConjuntos aCorConjunto) {
         //aPeca.setTabuleiro(this.tTabuleiro);
@@ -75,10 +79,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
     }
     
     
-
-    
-    
-    
+/*
     // Funcao grafica - DELETAR
     protected void mostraMovimento(){
         if(this.pecaEmMovimento != null){
@@ -104,6 +105,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
             }
         }
     }
+    */
     
     protected ArrayList<Posicao> osAlemao(){
         if(this.pecaEmMovimento != null){
@@ -124,6 +126,26 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
             int colAtual = atual.getColuna();
             int linAtual = atual.getLinha();
             Posicao posAtual;
+
+            // Caso especial que pode pular sobre outras pecas
+            if(pecaEmMovimento.toString() == "Cavalo"){               
+                // for (int i = linAtual -2, j = colAtual - 2; i != linAtual + 2 && j != colAtual + 2; i += 1, j += 1) {
+                for(int i = linAtual - 2; i <= linAtual + 2; i++){               
+                    for(int j = colAtual - 2; j <= colAtual + 2; j++){
+                        if(i > 7 || i < 0) continue;
+                        if(j > 7 || j < 0) continue;
+                        posAtual = new Posicao(i, j);
+                        if(pecaEmMovimento.direcaoMovimento(posAtual)){
+                            if(!this.cBrancas.PecaPosicao(posAtual) &&
+                                    !this.cPretas.PecaPosicao(posAtual))
+                                ondePode.add(posAtual);
+                            else
+                                if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
+                                    osAlemao.add(posAtual);      
+                        }   
+                    }
+                }
+            }
             
             // Move SUL
             System.out.println("NOVA TESTA: " + linAtual + " " + colAtual + " limite: " + pecaEmMovimento.limiteMovimento());
@@ -191,6 +213,83 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
                     break;
                 }
             }
+            /*
+            if(pecaEmMovimento.toString() == "Bispo" ||
+                pecaEmMovimento.toString() == "Rainha" ||
+                pecaEmMovimento.toString() == "Rei"){ 
+            */
+            // Move SUDOESTE (SUL ESQUERDA)
+            distAtual = 0;
+            colAtual = atual.getColuna();
+            linAtual = atual.getLinha();
+            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
+                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() + 1, atual.getColuna() - 1))){
+                if(linAtual == 7) break;
+                if(colAtual == 0) break;
+                posAtual = new Posicao(++linAtual, --colAtual);
+                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
+                    ondePode.add(posAtual);
+                }else{
+                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
+                        osAlemao.add(posAtual);
+                    break;
+                }
+            }
+            
+            // Move SUDESTE (SUL DIREITA)
+            distAtual = 0;
+            colAtual = atual.getColuna();
+            linAtual = atual.getLinha();
+            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
+                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() + 1, atual.getColuna() + 1))){
+                if(linAtual == 7) break;
+                if(colAtual == 7) break;
+                posAtual = new Posicao(++linAtual, ++colAtual);
+                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
+                    ondePode.add(posAtual);
+                }else{
+                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
+                        osAlemao.add(posAtual);
+                    break;
+                }
+            }
+            
+            
+            // Move SUDOESTE (NORTE ESQUERDA)
+            distAtual = 0;
+            colAtual = atual.getColuna();
+            linAtual = atual.getLinha();
+            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
+                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() - 1, atual.getColuna() - 1))){
+                if(linAtual == 0) break;
+                if(colAtual == 0) break;
+                posAtual = new Posicao(--linAtual, --colAtual);
+                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
+                    ondePode.add(posAtual);
+                }else{
+                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
+                        osAlemao.add(posAtual);
+                    break;
+                }
+            }
+            
+            // Move NORDESTE (NORTE DIREITA)
+            distAtual = 0;
+            colAtual = atual.getColuna();
+            linAtual = atual.getLinha();
+            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
+                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() - 1, atual.getColuna() + 1))){
+                if(linAtual == 0) break;
+                if(colAtual == 7) break;
+                posAtual = new Posicao(--linAtual, ++colAtual);
+                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
+                    ondePode.add(posAtual);
+                }else{
+                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
+                        osAlemao.add(posAtual);
+                    break;
+                }
+            }
                 
 
             
@@ -205,12 +304,14 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         return null;
     }
     
+    /*
     protected ArrayList<Posicao> movimentoValido(){
         if(this.pecaEmMovimento != null){
             // Destaque peca selecionada
             Posicao atual = pecaEmMovimento.getPosicaoPeca();
             ArrayList<Posicao> ondePode = new ArrayList<>();
             ondePode.add(atual);
+    
             /*
             for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
                 System.out.println("MOVE: " + pMove);
@@ -232,7 +333,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
                 else break;
             }
             */
-            
+            /*
             for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
                 int linhaColisao = -1;
                 int colunaColisao = -1;
@@ -260,8 +361,9 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         }
         return null;
     }
+    */
     
-   
+   /*
     protected ArrayList<Posicao> ataqueValido(){
         if(this.pecaEmMovimento != null){
             // Destaque peca selecionada
@@ -286,7 +388,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         }
         return null;
     }
-    
+    */
     
     protected void destaqueDoCarnaval(){
         if(this.pecaEmMovimento != null){
@@ -317,12 +419,18 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
                     this.tTabuleiro.preencherPosicao(pAtaque, false);
                 }
             }
-
+            
+            for(Posicao pAtaque : ajudaNois){
+                this.tTabuleiro.preencherPosicao(pAtaque, false);
+            }
+            for(Posicao pMove : levaAiTio){
+                this.tTabuleiro.preencherPosicao(pMove, true);
+            }
         }
     }
 
                 
-
+    /*
     protected void destaquePecaAtual(){
         if(this.pecaEmMovimento != null){
             // Destaque peca selecionada
@@ -346,60 +454,9 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
 
         }
     }
+    */
     
-    /*
-    protected void destaquePecaAtual(){
-        if(this.pecaEmMovimento != null){
-            // Destaque peca selecionada
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
-            this.tTabuleiro.destacarPosicao(atual, true);
-            
-            // Mostra movimentos possiveis - botao direito
-            if(this.controleMouse == 3){
-                // Verificacao movimentos possíveis
-                // obs so cavalo pode pular sobre outras pecas
-                for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
-                    boolean flag = true;
-                    for(Peca pBloqueia : this.cBrancas){
-                        if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                            flag = false;
-                            break;
-                        }
-                    }
-
-                    for(Peca pBloqueia : this.cPretas){
-                        if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if(flag) this.tTabuleiro.preencherPosicao(pMove, true);
-                    else break;
-                }
-            }
-            
-            // Mostra ataques possiveis - botao scroll (meio)
-            if(this.controleMouse == 2){
-                // Verificacao ataques possiveis
-                for(Posicao pAtaque : this.pecaEmMovimento.ataquesPossiveis()){
-
-                    for(Peca pAlvo : this.cBrancas){
-                       if((!this.pecaEmMovimento.temAMesmaCorQue(pAlvo)) && (pAlvo.getPosicaoPeca().igual(pAtaque))){
-                            this.tTabuleiro.preencherPosicao(pAtaque, false);
-                        }
-                    }
-
-                    for(Peca pAlvo : this.cPretas){
-                        if((!this.pecaEmMovimento.temAMesmaCorQue(pAlvo)) && (pAlvo.getPosicaoPeca().igual(pAtaque))){
-                            this.tTabuleiro.preencherPosicao(pAtaque, false);
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-*/
+    
     public void paint(Graphics g) {
         super.paint(g);
         cBrancas.AutoDesenho(tTabuleiro);
@@ -458,9 +515,10 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
 
         // Peca que vai executar movimento ja selecionada
         if(bEmJogada){
+            ArrayList<Posicao> ataqueValido = this.osAlemao();
             if(pecaClicada != null){
                 System.out.println("ta falando que aqui da");
-                for(Posicao p : this.movimentoValido()){
+                for(Posicao p : this.praOnde(ataqueValido)){
                     System.out.println(p);
                 }
                 //this.praOnde();
@@ -469,7 +527,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
             if (pecaClicada == null){
                 // Condicao acabou movimento ou esta em movimento
                 System.out.println(pecaEmMovimento);
-                if(this.movimentoValido().contains(getPosicaoDoClique(e))){
+                if(this.praOnde(ataqueValido).contains(getPosicaoDoClique(e))){
                     pecaEmMovimento.setPosicao(this.getPosicaoDoClique(e), tTabuleiro);
                     pecaEmMovimento = null;
                     bEmJogada = false;
@@ -480,11 +538,11 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
             // Selecionou uma peca
             }else{     
                 System.out.println("selecionou essa coisa :" + pecaClicada.getPosicaoPeca());
-                System.out.println("PRIMEIRO TESTE:" + this.movimentoValido().contains(pecaClicada.getPosicaoPeca()));
-                System.out.println("SEGUNDO TESTE:" + this.ataqueValido().contains(pecaClicada.getPosicaoPeca()));
+                System.out.println("PRIMEIRO TESTE:" + this.praOnde(ataqueValido).contains(pecaClicada.getPosicaoPeca()));
+                System.out.println("SEGUNDO TESTE:" + ataqueValido.contains(pecaClicada.getPosicaoPeca()));
 
                 //if(pecaEmMovimento.setPosicao(this.getPosicaoDoClique(e), tTabuleiro)){
-                if(this.ataqueValido().contains(pecaClicada.getPosicaoPeca()) || pecaEmMovimento == pecaClicada){
+                if(ataqueValido.contains(pecaClicada.getPosicaoPeca()) || pecaEmMovimento == pecaClicada){
                     pecaEmMovimento.setPosicao(this.getPosicaoDoClique(e), tTabuleiro);
                     // Selecionou mesma peca
                     if(pecaEmMovimento == pecaClicada){
@@ -522,7 +580,72 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         repaint();
     }
     
+    public void gerarTabuleiroRandomizado() {
+        // Criar um array para armazenar as posições iniciais das peças
+        Posicao[] posicoesIniciais = new Posicao[32];
+
+        // Gerar posições aleatórias para as peças brancas
+        Random random = new Random();
+        for (int i = 0; i < 16; i++) {
+            int row = random.nextInt(8); // Gera um número aleatório entre 0 e 7 (inclusive)
+            int col = random.nextInt(8); // Gera um número aleatório entre 0 e 7 (inclusive)
+            posicoesIniciais[i] = new Posicao(row, col);
+        }
+
+        // Gerar posições aleatórias para as peças pretas
+        for (int i = 16; i < 32; i++) {
+            int row = random.nextInt(8); // Gera um número aleatório entre 0 e 7 (inclusive)
+            int col = random.nextInt(8); // Gera um número aleatório entre 0 e 7 (inclusive)
+            posicoesIniciais[i] = new Posicao(row, col);
+        }
+
+        // Criar as peças brancas e pretas e adicionar ao conjunto correspondente
+        this.cBrancas = new Conjunto();
+        this.cPretas = new Conjunto();
+        
+        if(this.getPecaClicada(posicoesIniciais[0]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[0], true));
+            
+        
+        if(this.getPecaClicada(posicoesIniciais[1]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[1], true));
+        if(this.getPecaClicada(posicoesIniciais[2]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[2], true));
+        if(this.getPecaClicada(posicoesIniciais[3]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[3], true));                
+        if(this.getPecaClicada(posicoesIniciais[4]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[4], true));
+        if(this.getPecaClicada(posicoesIniciais[5]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[5], true));
+        if(this.getPecaClicada(posicoesIniciais[6]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[6], true));
+        if(this.getPecaClicada(posicoesIniciais[7]) == null) cBrancas.add(new Peao("PeaoBranco.png", posicoesIniciais[7], true));  
+        if(this.getPecaClicada(posicoesIniciais[8]) == null) cBrancas.add(new Torre("TorreBranca.png", posicoesIniciais[8], true));                  
+        if(this.getPecaClicada(posicoesIniciais[9]) == null) cBrancas.add(new Torre("TorreBranca.png", posicoesIniciais[9], true));                  
+        if(this.getPecaClicada(posicoesIniciais[10]) == null) cBrancas.add(new Cavalo("CavaloBranco.png", posicoesIniciais[10], true));                  
+        if(this.getPecaClicada(posicoesIniciais[1]) == null) cBrancas.add(new Cavalo("CavaloBranco.png", posicoesIniciais[11], true));                                  
+        if(this.getPecaClicada(posicoesIniciais[12]) == null) cBrancas.add(new Bispo("BispoBranco.png", posicoesIniciais[12], true));                                  
+        if(this.getPecaClicada(posicoesIniciais[13]) == null) cBrancas.add(new Bispo("BispoBranco.png", posicoesIniciais[13], true));                                  
+        if(this.getPecaClicada(posicoesIniciais[14]) == null) cBrancas.add(new Rainha("RainhaBranca.png", posicoesIniciais[14], true));                                  
+        if(this.getPecaClicada(posicoesIniciais[15]) == null) cBrancas.add(new Rei("ReiBranco.png", posicoesIniciais[15], true));                                                  
+
+        if(this.getPecaClicada(posicoesIniciais[16]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[16], false));                 
+        if(this.getPecaClicada(posicoesIniciais[17]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[17], false));                                 
+        if(this.getPecaClicada(posicoesIniciais[18]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[18], false));                 
+        if(this.getPecaClicada(posicoesIniciais[19]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[19], false));                                 
+        if(this.getPecaClicada(posicoesIniciais[20]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[20], false));                 
+        if(this.getPecaClicada(posicoesIniciais[21]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[21], false));                                 
+        if(this.getPecaClicada(posicoesIniciais[22]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[22], false));                 
+        if(this.getPecaClicada(posicoesIniciais[23]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[23], false));                                 
+        if(this.getPecaClicada(posicoesIniciais[24]) == null) cPretas.add(new Torre("TorrePreta.png", posicoesIniciais[24], false));                  
+        if(this.getPecaClicada(posicoesIniciais[25]) == null) cPretas.add(new Torre("TorrePreta.png", posicoesIniciais[25], false));                  
+        if(this.getPecaClicada(posicoesIniciais[26]) == null) cPretas.add(new Cavalo("CavaloPreto.png", posicoesIniciais[26], false));                  
+        if(this.getPecaClicada(posicoesIniciais[27]) == null) cPretas.add(new Cavalo("CavaloPreto.png", posicoesIniciais[27], false));                                  
+        if(this.getPecaClicada(posicoesIniciais[28]) == null) cPretas.add(new Bispo("BispoPreto.png", posicoesIniciais[28], false));                                  
+        if(this.getPecaClicada(posicoesIniciais[29]) == null) cPretas.add(new Bispo("BispoPreto.png", posicoesIniciais[29], false));                                  
+        if(this.getPecaClicada(posicoesIniciais[30]) == null) cPretas.add(new Rainha("RainhaPreta.png", posicoesIniciais[30], false));                                  
+        if(this.getPecaClicada(posicoesIniciais[31]) == null) cPretas.add(new Rei("ReiPreto.png", posicoesIniciais[31], false));   
+        
+        
+    }
+
+
+    
     public void keyPressed(KeyEvent e) {
+
         if(e.getKeyCode() == KeyEvent.VK_S){
             /* "jogoSalvos"+File.pathSeparator+"Nome" */
             File tanque = new File("Teste_Save_Peca.dat");
@@ -555,6 +678,11 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
             } catch (Exception ex) {
                 System.out.println("Ocorreu o seguinte erro:" + ex.getMessage());
             }
+        }
+        
+        if(e.getKeyCode() == KeyEvent.VK_R){
+            System.out.println("AQUI ENTROU!!!!!");
+            this.gerarTabuleiroRandomizado();
         }
 
         repaint();

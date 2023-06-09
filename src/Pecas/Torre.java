@@ -24,6 +24,7 @@ public class Torre extends Peca{
         return false;
     }
     
+    /*
     @Override
     public ArrayList<Posicao> movimentosPossiveis(){
         if(this.foiClicada(this.pPosicao)){
@@ -101,7 +102,7 @@ public class Torre extends Peca{
         }
         return null;
     }
-    
+    */
     
     @Override
     public double limiteMovimento(){
@@ -112,12 +113,11 @@ public class Torre extends Peca{
     @Override
     public boolean direcaoMovimento(Posicao pIncremento){  
         if(this.foiClicada(this.pPosicao)){
-            if(pIncremento.getColuna() < 0 || pIncremento.getColuna() > 7 || pIncremento.getLinha() < 0 || pIncremento.getLinha() > 7)
-                return false;
+            //if(pIncremento.getColuna() < 0 || pIncremento.getColuna() > 7 || pIncremento.getLinha() < 0 || pIncremento.getLinha() > 7)
+                //return false;
             
-            Posicao atual = this.getPosicaoPeca();
-            int pColuna = atual.getColuna();
-            int pLinha = atual.getLinha();
+            int pColuna = this.pPosicao.getColuna();
+            int pLinha = this.pPosicao.getLinha();
 
             // Ataque
             

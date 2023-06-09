@@ -12,9 +12,22 @@ public class Rainha extends Peca{
         return "Rainha";
     }
     public boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) {
-        throw new UnsupportedOperationException("Implemente esta funcao para a " + this); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.pPosicao.setPosicao(umaPosicao);
+            return true;
     }    
     
+    @Override
+    public double limiteMovimento(){
+        return 7;
+    }
+    
+    
+    @Override
+    public boolean direcaoMovimento(Posicao pIncremento){
+        return true;
+    }
+    
+    /*
     @Override
     public ArrayList<Posicao> movimentosPossiveis(){
         return null;
@@ -24,15 +37,6 @@ public class Rainha extends Peca{
     public ArrayList<Posicao> ataquesPossiveis(){
         return null;
     }
+    */
     
-    @Override
-    public double limiteMovimento(){
-        return 0;
-    }
-    
-    
-    @Override
-    public boolean direcaoMovimento(Posicao pIncremento){
-        return false;
-    }
 }

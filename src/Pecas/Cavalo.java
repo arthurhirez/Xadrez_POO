@@ -26,6 +26,7 @@ public class Cavalo extends Peca{
         return false;
     }  
     
+    /*
     @Override
     public ArrayList<Posicao> movimentosPossiveis(){
         return null;
@@ -35,15 +36,24 @@ public class Cavalo extends Peca{
     public ArrayList<Posicao> ataquesPossiveis(){
         return null;
     }
+    */
     
     @Override
     public double limiteMovimento(){
-        return Math.pow(5, 0.5);
+        return 5;
     }
     
     
     @Override
     public boolean direcaoMovimento(Posicao pIncremento){
-        return true;
+        double dif_lin, dif_col;
+        dif_col = (this.pPosicao.getColuna() - pIncremento.getColuna());
+        dif_col = Math.pow(dif_col, 2);
+        dif_lin = (this.pPosicao.getLinha() - pIncremento.getLinha());
+        dif_lin = Math.pow(dif_lin, 2);
+        
+        return ((dif_lin + dif_col) == 5);
+
     }
+    
 }

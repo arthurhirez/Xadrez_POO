@@ -58,7 +58,7 @@ public class Peao extends Peca {
     
     //public void boolean
     
-
+/*
     @Override
     // Todas as possiveis posicoes de movimento de uma peca "sozinha"
     public ArrayList<Posicao> movimentosPossiveis(){
@@ -71,7 +71,7 @@ public class Peao extends Peca {
             int pLinha = atual.getLinha();
             
             // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.convertBoolCoord();
+            int sinalLinha = this.converterBoolCoordenada();
   
             // Movimentos
             movimentos.add(new Posicao(pLinha + sinalLinha ,pColuna));
@@ -93,7 +93,7 @@ public class Peao extends Peca {
             int pLinha = atual.getLinha();
             
             // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.convertBoolCoord();
+            int sinalLinha = this.converterBoolCoordenada();
             // Ataque
             ataques.add(new Posicao(pLinha + sinalLinha,pColuna -1)); 
             ataques.add(new Posicao(pLinha + sinalLinha,pColuna + 1)); 
@@ -102,6 +102,7 @@ public class Peao extends Peca {
         }
         return null;
     }
+    */
     
     @Override
     public double limiteMovimento(){
@@ -118,11 +119,13 @@ public class Peao extends Peca {
             int pLinha = atual.getLinha();
             
             // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.convertBoolCoord();
+            int sinalLinha = this.converterBoolCoordenada();
             // Ataque
             
             if((pColuna == pIncremento.getColuna()) && (pIncremento.getLinha() == (pLinha + sinalLinha)))
                 return true;
+            
+            
         }
         return false;
     }

@@ -28,6 +28,27 @@ public class Bispo extends Peca {
     }
     
     @Override
+    public double limiteMovimento(){
+        return 7;
+    }
+    
+    
+    @Override
+    public boolean direcaoMovimento(Posicao pIncremento){
+        if (this.pPosicao.getColuna() != pIncremento.getColuna() &&
+                this.pPosicao.getLinha() != pIncremento.getLinha()) {
+            int dif_lin, dif_col;
+            dif_col = Math.abs(this.pPosicao.getColuna() - pIncremento.getColuna());
+            dif_lin = Math.abs(this.pPosicao.getLinha() - pIncremento.getLinha());
+            if(dif_lin == dif_col){
+                return true;     
+            }
+        }
+        return false;
+    }
+    
+    /*
+    @Override
     public ArrayList<Posicao> movimentosPossiveis(){
         return null;
     }
@@ -36,15 +57,5 @@ public class Bispo extends Peca {
     public ArrayList<Posicao> ataquesPossiveis(){
         return null;
     }
-    
-    @Override
-    public double limiteMovimento(){
-        return 0;
-    }
-    
-    
-    @Override
-    public boolean direcaoMovimento(Posicao pIncremento){
-        return false;
-    }
+    */
 }

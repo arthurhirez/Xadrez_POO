@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public interface Movimentos {
     //boolean temAlvo();
     
-    ArrayList<Posicao> movimentosPossiveis();
-    ArrayList<Posicao> ataquesPossiveis();
+    //ArrayList<Posicao> movimentosPossiveis();
+    //ArrayList<Posicao> ataquesPossiveis();
     
     double limiteMovimento();
     boolean direcaoMovimento(Posicao pIncremento);
