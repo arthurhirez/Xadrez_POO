@@ -114,33 +114,6 @@ public class Tabuleiro extends JPanel implements Serializable{
             
     }*/
     
-    public class MainFrame extends JFrame {
-        public MainFrame() {
-            setTitle("Tabuleiro de Xadrez");
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            JPanel panel = new JPanel();
-            panel.setLayout(new BorderLayout());
-
-            Tabuleiro tabuleiro = new Tabuleiro();
-            panel.add(tabuleiro, BorderLayout.CENTER);
-
-            JPanel sidePanel = new JPanel();
-            // Adicione os componentes desejados ao painel lateral aqui
-            sidePanel.setBackground(Color.lightGray);
-            panel.add(sidePanel, BorderLayout.EAST);
-
-            add(panel);
-            pack();
-            setLocationRelativeTo(null);
-        }
-
-        public void chama_frame() {
-            SwingUtilities.invokeLater(() -> {
-                MainFrame frame = new MainFrame();
-                frame.setVisible(true);
-            });
-        }
-    }
 
 }

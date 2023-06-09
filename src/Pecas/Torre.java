@@ -104,7 +104,7 @@ public class Torre extends Peca{
     
     
     @Override
-    public int limiteMovimento(){
+    public double limiteMovimento(){
         return 7;
     }
     

@@ -104,7 +104,7 @@ public class Peao extends Peca {
     }
     
     @Override
-    public int limiteMovimento(){
+    public double limiteMovimento(){
         return this.bPrimeiroLance ? 2 : 1;
     }
     

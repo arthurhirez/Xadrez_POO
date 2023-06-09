@@ -26,7 +26,7 @@ public class Rei extends Peca{
     }
     
     @Override
-    public int limiteMovimento(){
+    public double limiteMovimento(){
         return 0;
     }
     

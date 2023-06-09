@@ -38,7 +38,7 @@ public class Bispo extends Peca {
     }
     
     @Override
-    public int limiteMovimento(){
+    public double limiteMovimento(){
         return 0;
     }
     

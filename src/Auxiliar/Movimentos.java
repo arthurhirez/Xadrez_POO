@@ -19,6 +19,6 @@ public interface Movimentos {
     ArrayList<Posicao> movimentosPossiveis();
     ArrayList<Posicao> ataquesPossiveis();
     
-    int limiteMovimento();
+    double limiteMovimento();
     boolean direcaoMovimento(Posicao pIncremento);
 }

@@ -37,13 +37,13 @@ public class Cavalo extends Peca{
     }
     
     @Override
-    public int limiteMovimento(){
-        return 0;
+    public double limiteMovimento(){
+        return Math.pow(5, 0.5);
     }
     
     
     @Override
     public boolean direcaoMovimento(Posicao pIncremento){
-        return false;
+        return true;
     }
 }
