@@ -29,8 +29,11 @@ public class Conjunto extends ArrayList<Peca> implements Serializable{
     
 
     public void pecaFora(Peca aPeca){
-        for(int i = 0; i < this.size(); i++)
-            if(this.get(i) == aPeca)
-                this.remove(i);
+        if(aPeca != null){
+            for(int i = 0; i < this.size(); i++)
+                if(this.get(i) == aPeca)
+                    this.remove(i);
+        }
+        
     }
 }

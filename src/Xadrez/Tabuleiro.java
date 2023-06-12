@@ -101,6 +101,20 @@ public class Tabuleiro extends JPanel implements Serializable{
         g2d.fillRect(x, y, Consts.SIZE, Consts.SIZE);
     }
     
+    public void destaqueXeque(Posicao posicaoSelecionada) {
+        Graphics2D g2d = (Graphics2D) getGraphics();
+        int x = posicaoSelecionada.getColuna() * Consts.SIZE;
+        int y = posicaoSelecionada.getLinha() * Consts.SIZE;
+
+
+        g2d.setColor(Color.red);
+
+        // Desenhar um retângulo de destaque na posição selecionada
+        
+        g2d.setStroke(new BasicStroke(15));
+        g2d.drawRect(x, y, Consts.SIZE, Consts.SIZE);
+    }
+    
     
     /*
     protected Pecas getPecaEmPosicao(Posicao umaPosicao){

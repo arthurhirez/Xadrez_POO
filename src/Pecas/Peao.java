@@ -24,29 +24,7 @@ public class Peao extends Peca {
     
     
 
-    public boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) {
-        /*
-        // Deselecionar a peca
-        if(this.pPosicao.igual(umaPosicao)) return true;
-        
-        // Laco para checar se o movimento eh possivel atraves de interface
-        for(Posicao pPossivel : this.movimentosPossiveis()){
-            if(pPossivel.igual(umaPosicao)){
-                this.pPosicao.setPosicao(umaPosicao);
-                bPrimeiroLance = false;
-                return true;
-            }
-        }
-        
-        for(Posicao pPossivel : this.ataquesPossiveis()){
-            if(pPossivel.igual(umaPosicao)){
-                this.pPosicao.setPosicao(umaPosicao);
-                return true;
-            }
-        }
-
-        return false;
-*/      
+    public boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) {     
         // Deselecionar a peca
         if(this.pPosicao.igual(umaPosicao)) return true;
 
@@ -56,54 +34,7 @@ public class Peao extends Peca {
 
     }
     
-    //public void boolean
-    
-/*
-    @Override
-    // Todas as possiveis posicoes de movimento de uma peca "sozinha"
-    public ArrayList<Posicao> movimentosPossiveis(){
-        if(this.foiClicada(this.pPosicao)){
-            ArrayList<Posicao> movimentos = new ArrayList<>();
-            
-            // Posicao atual
-            Posicao atual = this.getPosicaoPeca();
-            int pColuna = atual.getColuna();
-            int pLinha = atual.getLinha();
-            
-            // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.converterBoolCoordenada();
-  
-            // Movimentos
-            movimentos.add(new Posicao(pLinha + sinalLinha ,pColuna));
-            if (this.bPrimeiroLance) movimentos.add(new Posicao(pLinha + 2*sinalLinha,pColuna));
 
-            return movimentos;
-        }
-        return null;
-    }
-    
-    @Override
-    // Todas as possiveis posicoes de ataque de uma peca "sozinha"
-    public ArrayList<Posicao> ataquesPossiveis(){
-        if(this.foiClicada(this.pPosicao)){
-            ArrayList<Posicao> ataques = new ArrayList<>();
-            
-            Posicao atual = this.getPosicaoPeca();
-            int pColuna = atual.getColuna();
-            int pLinha = atual.getLinha();
-            
-            // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.converterBoolCoordenada();
-            // Ataque
-            ataques.add(new Posicao(pLinha + sinalLinha,pColuna -1)); 
-            ataques.add(new Posicao(pLinha + sinalLinha,pColuna + 1)); 
-
-            return ataques;
-        }
-        return null;
-    }
-    */
-    
     @Override
     public double limiteMovimento(){
         return this.bPrimeiroLance ? 2 : 1;
@@ -112,21 +43,30 @@ public class Peao extends Peca {
     
     @Override
     public boolean direcaoMovimento(Posicao pIncremento){
-        if(this.foiClicada(this.pPosicao)){
-            
-            Posicao atual = this.getPosicaoPeca();
-            int pColuna = atual.getColuna();
-            int pLinha = atual.getLinha();
-            
-            // Brancas subtrai e pretas adiciona para mover entre linhas
-            int sinalLinha = this.converterBoolCoordenada();
-            // Ataque
-            
-            if((pColuna == pIncremento.getColuna()) && (pIncremento.getLinha() == (pLinha + sinalLinha)))
-                return true;
-            
-            
+
+        // Direcao movimentacao
+        Posicao atual = this.getPosicaoPeca();
+        int pColuna = atual.getColuna();
+        int pLinha = atual.getLinha();
+        int sinalLinha = this.converterBoolCoordenada();
+        // Brancas subtrai e pretas adiciona para mover entre linhas
+        
+        if((pColuna == pIncremento.getColuna()) &&
+                        (pIncremento.getLinha() == (pLinha + sinalLinha)))
+            return true;
+        
+        // Direcao ataque
+        if (this.ehDiagonal(pIncremento)){
+            int dif_lin, dif_col;
+            dif_col = Math.abs(this.pPosicao.getColuna() - pIncremento.getColuna());
+            dif_lin = Math.abs(this.pPosicao.getLinha() - pIncremento.getLinha());
+            if(dif_lin == dif_col){
+                return true;     
+            }
         }
+            
+            
+
         return false;
     }
     

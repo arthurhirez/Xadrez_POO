@@ -51,10 +51,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         controleMouse = -1;
         initComponents();
     }
-    
-    public static String testeFuncao(){
-        return "Esta funcionando porra!!!";
-    }
+
     // Inicializa pecas e suas posicoes na main
     public void addPeca(Peca aPeca, CoresConjuntos aCorConjunto) {
         //aPeca.setTabuleiro(this.tTabuleiro);
@@ -79,331 +76,185 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
     }
     
     
-/*
-    // Funcao grafica - DELETAR
-    protected void mostraMovimento(){
-        if(this.pecaEmMovimento != null){
-            // Destaque peca selecionada
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
-            for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
-                boolean flag = true;
-                for(Peca pBloqueia : this.cBrancas){
-                    if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                        flag = false;
-                        break;
+    protected boolean posicaoOcupada(Posicao pPosicao){
+        return (this.cBrancas.PecaPosicao(pPosicao) || this.cPretas.PecaPosicao(pPosicao));
+    }
+    
+    protected void checaIncremento(ArrayList<Posicao> ondePode, ArrayList<Posicao> osAlemao, Posicao pAtual, // Sempre igual
+                                    int deltaLinha, int deltaColuna){                                        // Caso a caso
+
+        int distAtual = 0;
+        int colAtual = pAtual.getColuna();
+        int linAtual = pAtual.getLinha();
+        Posicao pIncremento;
+        String flagPeca = pecaEmMovimento.toString();
+        
+        // Definido so um caso (1,1) para não repetir checagem 8 vezes
+        if(flagPeca.equals("Cavalo") && deltaLinha == 1 && deltaColuna == 1){               
+            for(int i = linAtual - 2; i <= linAtual + 2; i++){               
+                for(int j = colAtual - 2; j <= colAtual + 2; j++){
+                    if(i > 7 || i < 0) continue;
+                    if(j > 7 || j < 0) continue;
+                    pIncremento = new Posicao(i, j);
+                    if(pecaEmMovimento.direcaoMovimento(pIncremento)){
+                        if(!this.posicaoOcupada(pIncremento))
+                            ondePode.add(pIncremento);
+                        else
+                            if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(pIncremento)))
+                                osAlemao.add(pIncremento);      
+                    }   
+                }
+            }
+        }
+   
+        // Enquanto estiver no range de movimentos possiveis e na direcao correta adiciona na lista
+        while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
+                pecaEmMovimento.direcaoMovimento(new Posicao(pAtual.getLinha() + deltaLinha, pAtual.getColuna() + deltaColuna))){
+            linAtual += deltaLinha;
+            colAtual += deltaColuna;
+            
+            if(linAtual < 0 || linAtual > 7) break;
+            if(colAtual < 0 || colAtual > 7) break;
+            
+            pIncremento = new Posicao(linAtual, colAtual);
+            
+
+            if(!this.posicaoOcupada(pIncremento)){
+                if(flagPeca.equals("Peao") && pecaEmMovimento.ehDiagonal(pIncremento)) break;
+                
+                
+                if(flagPeca.equalsIgnoreCase("Rei")){
+                    // fazer função get conjunto?
+                    ArrayList<Posicao> aquiNaoMeuRei;
+                    if(this.pecaEmMovimento.converterBoolCoordenada() == 1){
+                        aquiNaoMeuRei = this.estaraEmXeque(pIncremento, CoresConjuntos.BRANCAS);   
+                    }else{
+                        aquiNaoMeuRei = this.estaraEmXeque(pIncremento, CoresConjuntos.PRETAS);
+                    }
+
+
+                    
+                    if(aquiNaoMeuRei != null){
+                        for(Posicao p : aquiNaoMeuRei){
+                            System.out.println(this.getPecaClicada(p) + " em " + p);
+                            this.tTabuleiro.destaqueXeque(p);
+                        }
+                        break; 
                     }
                 }
 
-                for(Peca pBloqueia : this.cPretas){
-                    if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                        flag = false;
+                ondePode.add(pIncremento);
+            }else{
+                if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(pIncremento))){
+                    if(flagPeca.equals("Peao") &&
+                        (!pecaEmMovimento.ehDiagonal(pIncremento) || ((pecaEmMovimento.converterBoolCoordenada()*deltaLinha) == -1)))
                         break;
-                    }
+                    osAlemao.add(pIncremento);
                 }
-                if(flag) this.tTabuleiro.preencherPosicao(pMove, true);
-                else break; 
+
+                break;
             }
         }
     }
-    */
     
-    protected ArrayList<Posicao> osAlemao(){
-        if(this.pecaEmMovimento != null){
-            ArrayList<Posicao> meteBala = new ArrayList<>();
-            
-            return meteBala;
+    
+    public ArrayList<Posicao> estaraEmXeque(Posicao pPosicao, CoresConjuntos aCorConjunto) {
+        //aPeca.setTabuleiro(this.tTabuleiro);
+        boolean flag = false;
+        ArrayList<Posicao> osMatadores = new ArrayList<>();
+        Peca reiBKP = this.pecaEmMovimento;
+        
+        if(aCorConjunto == CoresConjuntos.BRANCAS) {  
+            for(Peca vaiMataORei : cBrancas){
+                if(vaiMataORei.toString().equals("Rei")) continue;
+                if(vaiMataORei.toString().equals("Peao")){
+                    if((vaiMataORei.ehDiagonal(pPosicao) && (pPosicao.getLinha() - vaiMataORei.getPosicaoPeca().getLinha() == vaiMataORei.converterBoolCoordenada()))){
+                        //System.out.println("condicao certa!!!!!!!!!!!!!!!");
+                        flag = true;
+                        osMatadores.add(vaiMataORei.getPosicaoPeca());
+                    }
+                }else{
+                    this.pecaEmMovimento = vaiMataORei;
+                    ArrayList<Posicao> osAlemaoPeca = new ArrayList<>();
+                    ArrayList<Posicao> ondePodePeca = praOnde(osAlemaoPeca);
+
+                    for(Posicao pos : ondePodePeca){
+                        if(pPosicao.igual(pos)){
+                            flag = true;
+                            //System.out.println("Posicao de xeque para " + vaiMataORei);
+                            osMatadores.add(vaiMataORei.getPosicaoPeca());
+                        }
+                    }
+                    this.pecaEmMovimento = reiBKP;
+                }
+            }
+        }else{
+            for(Peca vaiMataORei : cPretas){
+                if(vaiMataORei.toString().equals("Rei")) continue;
+                if(vaiMataORei.toString().equals("Peao")){
+                    if((vaiMataORei.ehDiagonal(pPosicao) && (pPosicao.getLinha() - vaiMataORei.getPosicaoPeca().getLinha() == vaiMataORei.converterBoolCoordenada()))){
+                        //System.out.println("condicao certa!!!!!!!!!!!!!!!");
+                        flag = true;
+                        osMatadores.add(vaiMataORei.getPosicaoPeca());
+                    }
+                }else{
+                    this.pecaEmMovimento = vaiMataORei;
+                    ArrayList<Posicao> osAlemaoPeca = new ArrayList<>();
+                    ArrayList<Posicao> ondePodePeca = praOnde(osAlemaoPeca);
+
+                    for(Posicao pos : ondePodePeca){
+                        if(pPosicao.igual(pos)){
+                            flag = true;
+                            //System.out.println("Posicao de xeque para " + vaiMataORei);
+                            osMatadores.add(vaiMataORei.getPosicaoPeca());
+                        }
+                    }
+                    this.pecaEmMovimento = reiBKP;
+                }
+            }
         }
-        return null;
+        /*
+        if(flag) System.out.println("AQUI QUEM VAI MATA:");
+        for(Posicao p : osMatadores){
+            System.out.println(p);
+        }*/
+
+        return flag ? osMatadores : null;
     }
     
     protected ArrayList<Posicao> praOnde(ArrayList<Posicao> osAlemao){
         if(this.pecaEmMovimento != null){
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
+            Posicao pAtual = pecaEmMovimento.getPosicaoPeca();
             ArrayList<Posicao> ondePode = new ArrayList<>();
-            ondePode.add(atual);
-            
-            int distAtual = 0;
-            int colAtual = atual.getColuna();
-            int linAtual = atual.getLinha();
-            Posicao posAtual;
+            ondePode.add(pAtual);
 
-            // Caso especial que pode pular sobre outras pecas
-            if(pecaEmMovimento.toString() == "Cavalo"){               
-                // for (int i = linAtual -2, j = colAtual - 2; i != linAtual + 2 && j != colAtual + 2; i += 1, j += 1) {
-                for(int i = linAtual - 2; i <= linAtual + 2; i++){               
-                    for(int j = colAtual - 2; j <= colAtual + 2; j++){
-                        if(i > 7 || i < 0) continue;
-                        if(j > 7 || j < 0) continue;
-                        posAtual = new Posicao(i, j);
-                        if(pecaEmMovimento.direcaoMovimento(posAtual)){
-                            if(!this.cBrancas.PecaPosicao(posAtual) &&
-                                    !this.cPretas.PecaPosicao(posAtual))
-                                ondePode.add(posAtual);
-                            else
-                                if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                                    osAlemao.add(posAtual);      
-                        }   
-                    }
-                }
-            }
-            
-            // Move SUL
-            System.out.println("NOVA TESTA: " + linAtual + " " + colAtual + " limite: " + pecaEmMovimento.limiteMovimento());
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() + 1, atual.getColuna()))){
-                if(linAtual == 7) break;
-                posAtual = new Posicao(++linAtual, colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-                    
-            // Move NORTE
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() - 1, atual.getColuna()))){
-                if(linAtual == 0) break;
-                posAtual = new Posicao(--linAtual, colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
+            // Checa os movimentos nas 8 direcoes
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
+                    if (i != 0 || j != 0)
+                        this.checaIncremento(ondePode, osAlemao, pAtual, i, j);
 
-            
-            // Move ESQUERDA
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha(), atual.getColuna() - 1))){
-                if(colAtual == 0) break;
-                posAtual = new Posicao(linAtual, --colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-            
-            // Move DIREITA
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha(), atual.getColuna() + 1))){
-                if(colAtual == 7) break;
-                posAtual = new Posicao(linAtual, ++colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-            /*
-            if(pecaEmMovimento.toString() == "Bispo" ||
-                pecaEmMovimento.toString() == "Rainha" ||
-                pecaEmMovimento.toString() == "Rei"){ 
-            */
-            // Move SUDOESTE (SUL ESQUERDA)
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() + 1, atual.getColuna() - 1))){
-                if(linAtual == 7) break;
-                if(colAtual == 0) break;
-                posAtual = new Posicao(++linAtual, --colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-            
-            // Move SUDESTE (SUL DIREITA)
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() + 1, atual.getColuna() + 1))){
-                if(linAtual == 7) break;
-                if(colAtual == 7) break;
-                posAtual = new Posicao(++linAtual, ++colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-            
-            
-            // Move SUDOESTE (NORTE ESQUERDA)
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() - 1, atual.getColuna() - 1))){
-                if(linAtual == 0) break;
-                if(colAtual == 0) break;
-                posAtual = new Posicao(--linAtual, --colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-            
-            // Move NORDESTE (NORTE DIREITA)
-            distAtual = 0;
-            colAtual = atual.getColuna();
-            linAtual = atual.getLinha();
-            while(++distAtual <= pecaEmMovimento.limiteMovimento() &&
-                    pecaEmMovimento.direcaoMovimento(new Posicao(atual.getLinha() - 1, atual.getColuna() + 1))){
-                if(linAtual == 0) break;
-                if(colAtual == 7) break;
-                posAtual = new Posicao(--linAtual, ++colAtual);
-                if(!this.cBrancas.PecaPosicao(posAtual) && !this.cPretas.PecaPosicao(posAtual)){
-                    ondePode.add(posAtual);
-                }else{
-                    if(!pecaEmMovimento.temAMesmaCorQue(this.getPecaClicada(posAtual)))
-                        osAlemao.add(posAtual);
-                    break;
-                }
-            }
-                
-
-            
-            System.out.println("NOVA FUNCAO TESTANDO: ");
-            for(Posicao p : ondePode){
-                System.out.println(p);
-            }
-               
             return ondePode;
-        }
-        
+        }     
         return null;
     }
-    
-    /*
-    protected ArrayList<Posicao> movimentoValido(){
-        if(this.pecaEmMovimento != null){
-            // Destaque peca selecionada
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
-            ArrayList<Posicao> ondePode = new ArrayList<>();
-            ondePode.add(atual);
-    
-            /*
-            for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
-                System.out.println("MOVE: " + pMove);
-                boolean flag = true;
-                for(Peca pBloqueia : this.cBrancas){
-                    if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                        flag = false;
-                        break;
-                    }
-                }
-
-                for(Peca pBloqueia : this.cPretas){
-                    if(pBloqueia.getPosicaoPeca().igual(pMove)){
-                        flag = false;
-                        break;
-                    }
-                }
-                if(flag) ondePode.add(pMove);
-                else break;
-            }
-            */
-            /*
-            for(Posicao pMove : this.pecaEmMovimento.movimentosPossiveis()){
-                int linhaColisao = -1;
-                int colunaColisao = -1;
-                if(!this.cBrancas.PecaPosicao(pMove) && !this.cPretas.PecaPosicao(pMove)){
-                    if(linhaColisao != -1){
-                        
-                    }
-                
-                    if(colunaColisao != -1){
-                        
-                    }
-                    
-                    ondePode.add(pMove);
-                }else{
-                    linhaColisao = pMove.getLinha();
-                    colunaColisao = pMove.getColuna();
-                }
-                     
-                    
-               
-            }
-            
-            
-            return ondePode;
-        }
-        return null;
-    }
-    */
-    
-   /*
-    protected ArrayList<Posicao> ataqueValido(){
-        if(this.pecaEmMovimento != null){
-            // Destaque peca selecionada
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
-            ArrayList<Posicao> ondePode = new ArrayList<>();
-            
-            for(Posicao pAtaque : this.pecaEmMovimento.ataquesPossiveis()){
-                
-                    for(Peca pAlvo : this.cBrancas){
-                       if((!this.pecaEmMovimento.temAMesmaCorQue(pAlvo)) && (pAlvo.getPosicaoPeca().igual(pAtaque))){
-                            ondePode.add(pAtaque);
-                        }
-                    }
-
-                    for(Peca pAlvo : this.cPretas){
-                        if((!this.pecaEmMovimento.temAMesmaCorQue(pAlvo)) && (pAlvo.getPosicaoPeca().igual(pAtaque))){
-                            ondePode.add(pAtaque);
-                        }
-                    }
-            }
-            return ondePode;
-        }
-        return null;
-    }
-    */
-    
+   
     protected void destaqueDoCarnaval(){
         if(this.pecaEmMovimento != null){
             // Destaque peca selecionada
             Posicao atual = pecaEmMovimento.getPosicaoPeca();
             this.tTabuleiro.destacarPosicao(atual, true);
             
-            ArrayList<Posicao> ajudaNois = this.osAlemao();
+            ArrayList<Posicao> ajudaNois = new ArrayList<>();
             ArrayList<Posicao> levaAiTio = this.praOnde(ajudaNois);
             
+            /*
             System.out.println("TA FALANDO PRA METE BALA:");
             
             for(Posicao p : ajudaNois){
                 System.out.println(p);
             }
+            */
             
             // Mostra movimentos possiveis - botao direito
             if(this.controleMouse == 3){
@@ -429,33 +280,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         }
     }
 
-                
-    /*
-    protected void destaquePecaAtual(){
-        if(this.pecaEmMovimento != null){
-            // Destaque peca selecionada
-            Posicao atual = pecaEmMovimento.getPosicaoPeca();
-            this.tTabuleiro.destacarPosicao(atual, true);
-            
-            // Mostra movimentos possiveis - botao direito
-            if(this.controleMouse == 3){
-                for(Posicao pMove : this.movimentoValido()){
-                    this.tTabuleiro.preencherPosicao(pMove, true);
-                }
-            }
-
-            // Mostra ataques possiveis - botao scroll (meio)
-            if(this.controleMouse == 2){
-                // Verificacao ataques possiveis
-                for(Posicao pAtaque : this.ataqueValido()){
-                    this.tTabuleiro.preencherPosicao(pAtaque, false);
-                }
-            }
-
-        }
-    }
-    */
-    
+  
     
     public void paint(Graphics g) {
         super.paint(g);
@@ -470,6 +295,7 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         */
         
         destaqueDoCarnaval();
+        
         //destaquePecaAtual();
         //mostraMovimento();
         
@@ -515,14 +341,14 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
 
         // Peca que vai executar movimento ja selecionada
         if(bEmJogada){
-            ArrayList<Posicao> ataqueValido = this.osAlemao();
+            ArrayList<Posicao> ataqueValido  = new ArrayList<>();
+            
             if(pecaClicada != null){
-                System.out.println("ta falando que aqui da");
-                for(Posicao p : this.praOnde(ataqueValido)){
-                    System.out.println(p);
-                }
+                //System.out.println("ta falando que aqui da");
+                for(Posicao p : this.praOnde(ataqueValido));
                 //this.praOnde();
             }
+            
             // Selecionou uma posicao vazia
             if (pecaClicada == null){
                 // Condicao acabou movimento ou esta em movimento
@@ -537,9 +363,9 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
                 
             // Selecionou uma peca
             }else{     
-                System.out.println("selecionou essa coisa :" + pecaClicada.getPosicaoPeca());
-                System.out.println("PRIMEIRO TESTE:" + this.praOnde(ataqueValido).contains(pecaClicada.getPosicaoPeca()));
-                System.out.println("SEGUNDO TESTE:" + ataqueValido.contains(pecaClicada.getPosicaoPeca()));
+                //System.out.println("selecionou essa coisa :" + pecaClicada.getPosicaoPeca());
+                //System.out.println("PRIMEIRO TESTE:" + this.praOnde(ataqueValido).contains(pecaClicada.getPosicaoPeca()));
+                //System.out.println("SEGUNDO TESTE:" + ataqueValido.contains(pecaClicada.getPosicaoPeca()));
 
                 //if(pecaEmMovimento.setPosicao(this.getPosicaoDoClique(e), tTabuleiro)){
                 if(ataqueValido.contains(pecaClicada.getPosicaoPeca()) || pecaEmMovimento == pecaClicada){
@@ -620,8 +446,11 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         if(this.getPecaClicada(posicoesIniciais[12]) == null) cBrancas.add(new Bispo("BispoBranco.png", posicoesIniciais[12], true));                                  
         if(this.getPecaClicada(posicoesIniciais[13]) == null) cBrancas.add(new Bispo("BispoBranco.png", posicoesIniciais[13], true));                                  
         if(this.getPecaClicada(posicoesIniciais[14]) == null) cBrancas.add(new Rainha("RainhaBranca.png", posicoesIniciais[14], true));                                  
-        if(this.getPecaClicada(posicoesIniciais[15]) == null) cBrancas.add(new Rei("ReiBranco.png", posicoesIniciais[15], true));                                                  
-
+        
+        // Forcando que tenha rei no tabuleiro
+        if(this.getPecaClicada(posicoesIniciais[15]) != null) cBrancas.pecaFora(this.getPecaClicada(posicoesIniciais[15]));
+        cBrancas.add(new Rei("ReiBranco.png", posicoesIniciais[15], true));                                        
+        
         if(this.getPecaClicada(posicoesIniciais[16]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[16], false));                 
         if(this.getPecaClicada(posicoesIniciais[17]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[17], false));                                 
         if(this.getPecaClicada(posicoesIniciais[18]) == null) cPretas.add(new Peao("PeaoPreto.png", posicoesIniciais[18], false));                 
@@ -637,8 +466,13 @@ public class Jogo extends javax.swing.JFrame implements MouseListener, KeyListen
         if(this.getPecaClicada(posicoesIniciais[28]) == null) cPretas.add(new Bispo("BispoPreto.png", posicoesIniciais[28], false));                                  
         if(this.getPecaClicada(posicoesIniciais[29]) == null) cPretas.add(new Bispo("BispoPreto.png", posicoesIniciais[29], false));                                  
         if(this.getPecaClicada(posicoesIniciais[30]) == null) cPretas.add(new Rainha("RainhaPreta.png", posicoesIniciais[30], false));                                  
-        if(this.getPecaClicada(posicoesIniciais[31]) == null) cPretas.add(new Rei("ReiPreto.png", posicoesIniciais[31], false));   
-        
+  
+        // Forcando que tenha rei no tabuleiro
+        if(this.getPecaClicada(posicoesIniciais[31]) != null){
+            cBrancas.pecaFora(this.getPecaClicada(posicoesIniciais[31]));
+            cPretas.pecaFora(this.getPecaClicada(posicoesIniciais[31]));
+        }
+        cPretas.add(new Rei("ReiPreto.png", posicoesIniciais[31], false)); 
         
     }
 
