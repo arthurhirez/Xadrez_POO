@@ -21,19 +21,8 @@ import java.awt.BorderLayout;
 
 
 public class Tabuleiro extends JPanel implements Serializable{
-    //Conjunto Brancas;
-    //Conjunto Pretas;
     Graphics g2;
     Jogo j;
-
-    /*
-    Tabuleiro(Conjunto cBrancas, Conjunto cPretas) {
-        Brancas = cBrancas;
-        Pretas = cPretas;
-        j = null;
-    }
-    
-    */
 
     Tabuleiro(){
         j = null;
@@ -116,17 +105,7 @@ public class Tabuleiro extends JPanel implements Serializable{
     }
     
     
-    /*
-    protected Pecas getPecaEmPosicao(Posicao umaPosicao){
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                
-            }
-            
-        }
-
-            
-    }*/
+    
     
 
 

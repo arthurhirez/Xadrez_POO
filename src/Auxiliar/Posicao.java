@@ -40,6 +40,11 @@ public class Posicao implements Serializable{
         setLinha(posicao.getLinha());
         setColuna(posicao.getColuna());
     }
+    
+    public boolean posicaoInvalida(){
+        if(this.getColuna() < 0 || this.getColuna() > 7) return true;
+        return (this.getLinha() < 0 || this.getLinha() > 7) ;
+    }
 
     @Override
     public String toString() {

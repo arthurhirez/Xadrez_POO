@@ -1,0 +1,148 @@
+@startuml
+abstract class Pecas.Peca
+annotation java.lang.Override
+class Auxiliar.Consts
+class Auxiliar.InvalidValueException
+class Pecas.Bispo
+class Pecas.Cavalo
+class Pecas.Peao
+class Pecas.Rainha
+class Pecas.Rei
+class Pecas.Torre
+class Xadrez.Conjunto
+class Xadrez.Jogo
+class Xadrez.Main
+class Xadrez.Tabuleiro
+class auxiliar.Posicao
+class java.awt.AlphaComposite
+class java.awt.BasicStroke
+class java.awt.BorderLayout
+class java.awt.Color
+class java.awt.Graphics
+class java.awt.Graphics2D
+class java.awt.Image
+class java.awt.Toolkit
+class java.awt.event.KeyEvent
+class java.awt.event.MouseEvent
+class java.awt.image.BufferStrategy
+class java.io.File
+class java.io.FileInputStream
+class java.io.FileOutputStream
+class java.io.IOException
+class java.io.ObjectInputStream
+class java.io.ObjectOutputStream
+class java.lang.Exception
+class java.util.ArrayList
+class java.util.Random
+class java.util.Timer
+class java.util.TimerTask
+class java.util.logging.Level
+class java.util.logging.Logger
+class java.util.zip.GZIPInputStream
+class java.util.zip.GZIPOutputStream
+class javax.swing.ImageIcon
+class javax.swing.JFrame
+class javax.swing.JPanel
+class javax.swing.SwingUtilities
+interface Auxiliar.Movimentos
+interface java.awt.event.KeyListener
+interface java.awt.event.MouseListener
+interface java.io.Serializable
+Pecas.Peca ..> Auxiliar.Consts
+Pecas.Peca ..> Auxiliar.InvalidValueException
+Pecas.Peca ..> Xadrez.Tabuleiro
+Pecas.Peca ..> auxiliar.Posicao
+Pecas.Peca ..> java.awt.Graphics2D
+Pecas.Peca ..> java.io.IOException
+Pecas.Peca ..> javax.swing.ImageIcon
+Pecas.Peca --|> Auxiliar.Movimentos
+Pecas.Peca --|> java.io.Serializable
+Auxiliar.Consts ..> java.io.File
+Auxiliar.InvalidValueException --|> java.lang.Exception
+Pecas.Bispo --|> Pecas.Peca
+Pecas.Bispo ..> java.lang.Override
+Pecas.Bispo ..> Auxiliar.InvalidValueException
+Pecas.Bispo ..> Xadrez.Tabuleiro
+Pecas.Bispo ..> auxiliar.Posicao
+Pecas.Cavalo --|> Pecas.Peca
+Pecas.Cavalo ..> java.lang.Override
+Pecas.Cavalo ..> Auxiliar.InvalidValueException
+Pecas.Cavalo ..> Xadrez.Tabuleiro
+Pecas.Cavalo ..> auxiliar.Posicao
+Pecas.Peao --|> Pecas.Peca
+Pecas.Peao ..> java.lang.Override
+Pecas.Peao ..> Auxiliar.InvalidValueException
+Pecas.Peao ..> Xadrez.Tabuleiro
+Pecas.Peao ..> auxiliar.Posicao
+Pecas.Rainha --|> Pecas.Peca
+Pecas.Rainha ..> java.lang.Override
+Pecas.Rainha ..> Auxiliar.InvalidValueException
+Pecas.Rainha ..> Xadrez.Tabuleiro
+Pecas.Rainha ..> auxiliar.Posicao
+Pecas.Rei --|> Pecas.Peca
+Pecas.Rei ..> java.lang.Override
+Pecas.Rei ..> Auxiliar.InvalidValueException
+Pecas.Rei ..> Xadrez.Tabuleiro
+Pecas.Rei ..> auxiliar.Posicao
+Pecas.Torre --|> Pecas.Peca
+Pecas.Torre ..> java.lang.Override
+Pecas.Torre ..> Auxiliar.InvalidValueException
+Pecas.Torre ..> Xadrez.Tabuleiro
+Pecas.Torre ..> auxiliar.Posicao
+Xadrez.Conjunto ..> Pecas.Peca
+Xadrez.Conjunto ..> auxiliar.Posicao
+Xadrez.Conjunto --|> java.util.ArrayList
+Xadrez.Conjunto --|> java.io.Serializable
+Xadrez.Jogo ..> java.lang.Override
+Xadrez.Jogo ..> Auxiliar.Consts
+Xadrez.Jogo ..> Auxiliar.InvalidValueException
+Xadrez.Jogo ..> auxiliar.Posicao
+Xadrez.Jogo ..> java.awt.Graphics
+Xadrez.Jogo ..> java.awt.event.KeyEvent
+Xadrez.Jogo ..> java.awt.event.MouseEvent
+Xadrez.Jogo ..> java.io.File
+Xadrez.Jogo ..> java.io.FileInputStream
+Xadrez.Jogo ..> java.io.FileOutputStream
+Xadrez.Jogo ..> java.io.IOException
+Xadrez.Jogo ..> java.io.ObjectInputStream
+Xadrez.Jogo ..> java.io.ObjectOutputStream
+Xadrez.Jogo ..> java.util.ArrayList
+Xadrez.Jogo ..> java.util.Random
+Xadrez.Jogo ..> java.util.Timer
+Xadrez.Jogo ..> java.util.TimerTask
+Xadrez.Jogo ..> java.util.logging.Level
+Xadrez.Jogo ..> java.util.logging.Logger
+Xadrez.Jogo ..> java.util.zip.GZIPInputStream
+Xadrez.Jogo ..> java.util.zip.GZIPOutputStream
+Xadrez.Jogo --|> javax.swing.JFrame
+Xadrez.Jogo --|> java.awt.event.KeyListener
+Xadrez.Jogo --|> java.awt.event.MouseListener
+Xadrez.Main ..> Pecas.Bispo
+Xadrez.Main ..> Pecas.Cavalo
+Xadrez.Main ..> Pecas.Peao
+Xadrez.Main ..> Pecas.Rainha
+Xadrez.Main ..> Pecas.Rei
+Xadrez.Main ..> Pecas.Torre
+Xadrez.Main ..> auxiliar.Posicao
+Xadrez.Tabuleiro ..> Auxiliar.Consts
+Xadrez.Tabuleiro ..> auxiliar.Posicao
+Xadrez.Tabuleiro ..> java.awt.AlphaComposite
+Xadrez.Tabuleiro ..> java.awt.BasicStroke
+Xadrez.Tabuleiro ..> java.awt.BorderLayout
+Xadrez.Tabuleiro ..> java.awt.Color
+Xadrez.Tabuleiro ..> java.awt.Graphics
+Xadrez.Tabuleiro ..> java.awt.Graphics2D
+Xadrez.Tabuleiro ..> java.awt.Image
+Xadrez.Tabuleiro ..> java.awt.Toolkit
+Xadrez.Tabuleiro ..> java.awt.image.BufferStrategy
+Xadrez.Tabuleiro ..> java.io.IOException
+Xadrez.Tabuleiro ..> java.util.logging.Level
+Xadrez.Tabuleiro ..> java.util.logging.Logger
+Xadrez.Tabuleiro ..> javax.swing.JFrame
+Xadrez.Tabuleiro --|> javax.swing.JPanel
+Xadrez.Tabuleiro ..> javax.swing.SwingUtilities
+Xadrez.Tabuleiro --|> java.io.Serializable
+auxiliar.Posicao ..> java.lang.Override
+auxiliar.Posicao --|> java.io.Serializable
+Auxiliar.Movimentos ..> auxiliar.Posicao
+@enduml

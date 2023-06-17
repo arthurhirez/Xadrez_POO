@@ -4,21 +4,17 @@
  */
 package Auxiliar;
 
-import Pecas.Peca;
-import Xadrez.Tabuleiro;
 import auxiliar.Posicao;
-import java.util.ArrayList;
 
 /**
  *
  * @author ArthurHR
  */
 public interface Movimentos {
-    //boolean temAlvo();
     
-    //ArrayList<Posicao> movimentosPossiveis();
-    //ArrayList<Posicao> ataquesPossiveis();
-    
+    // Qual o limite de casas que cada peca pode se mover
     double limiteMovimento();
+    
+    // Define as regras de movimento das pecas
     boolean direcaoMovimento(Posicao pIncremento);
 }

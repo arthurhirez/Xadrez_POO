@@ -1,13 +1,9 @@
 package Pecas;
 
-import Auxiliar.Consts;
+import Auxiliar.InvalidValueException;
 import Xadrez.Tabuleiro;
 import auxiliar.Posicao;
-import java.awt.Graphics2D;
-import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+
 
 public class Peao extends Peca {
 
@@ -18,39 +14,40 @@ public class Peao extends Peca {
         this.bPrimeiroLance = true;
     }
 
+    @Override
     public String toString() {
         return "Peao";
     }
     
-    
-
-    public boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) {     
-        // Deselecionar a peca
-        if(this.pPosicao.igual(umaPosicao)) return true;
-
-        this.pPosicao.setPosicao(umaPosicao);
-        bPrimeiroLance = false;
-        return true;
-
+    @Override
+    public boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) throws InvalidValueException {     
+        if (umaPosicao.posicaoInvalida())
+            throw new InvalidValueException();
+        else{
+            if(!this.pPosicao.equals(umaPosicao)){
+                bPrimeiroLance = false;
+            }             
+            this.pPosicao.setPosicao(umaPosicao);
+            return true;
+        }
     }
-    
-
+   
     @Override
     public double limiteMovimento(){
+        // Primeiro movimento do peao pode ser 2 casas, os demais 1 casa
         return this.bPrimeiroLance ? 2 : 1;
     }
-    
-    
+        
     @Override
     public boolean direcaoMovimento(Posicao pIncremento){
-
         // Direcao movimentacao
         Posicao atual = this.getPosicaoPeca();
         int pColuna = atual.getColuna();
         int pLinha = atual.getLinha();
-        int sinalLinha = this.converterBoolCoordenada();
         // Brancas subtrai e pretas adiciona para mover entre linhas
+        int sinalLinha = this.converterBoolCoordenada();
         
+        // Regras movimento peao
         if((pColuna == pIncremento.getColuna()) &&
                         (pIncremento.getLinha() == (pLinha + sinalLinha)))
             return true;
@@ -64,9 +61,6 @@ public class Peao extends Peca {
                 return true;     
             }
         }
-            
-            
-
         return false;
     }
     

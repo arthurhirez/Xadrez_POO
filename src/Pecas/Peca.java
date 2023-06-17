@@ -1,8 +1,8 @@
 package Pecas;
 
 import Auxiliar.Consts;
+import Auxiliar.InvalidValueException;
 import Auxiliar.Movimentos;
-import Xadrez.Jogo;
 import Xadrez.Tabuleiro;
 import auxiliar.Posicao;
 import java.awt.Graphics2D;
@@ -14,8 +14,6 @@ import javax.swing.ImageIcon;
 public abstract class Peca implements Serializable, Movimentos{
     protected ImageIcon iImage;
     protected Posicao pPosicao;
-    /*O elemento deve saber em qual cenário ele está*/
-    //protected Tabuleiro tTabuleiro;
     protected boolean bBrancas;
 
     protected Peca(String sAFileName, Posicao aPosicao, boolean bBrancas) {
@@ -28,16 +26,25 @@ public abstract class Peca implements Serializable, Movimentos{
         }        
     }
     
+    // Funcao que define posicao da peca e confere se eh valida atraves de tratamento de excecao
+    public abstract boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro) throws InvalidValueException;
+    
+    // Funcao auxiliar para direcao movimento
     public int converterBoolCoordenada() {
         return (this.bBrancas) ? -1 : 1;
     }
     
+    public boolean pecaBranca(){
+        return this.bBrancas;
+    }
     
+    // Funcao auxiliar retorna se posicao em relacao a peca eh em linha reta
     public boolean ehReta(Posicao pIncremento){
         return ((this.pPosicao.getColuna() == pIncremento.getColuna()) ||
                 (this.pPosicao.getLinha() == pIncremento.getLinha()));
     }
     
+    // Funcao auxiliar retorna se posicao em relacao a peca eh em diagonal
     public boolean ehDiagonal(Posicao pIncremento){
         if (this.pPosicao.getColuna() != pIncremento.getColuna() &&
                 this.pPosicao.getLinha() != pIncremento.getLinha()) {
@@ -51,40 +58,28 @@ public abstract class Peca implements Serializable, Movimentos{
         return false;
     }
     
+    // Funcao auxiliar para checar se pecas sao da mesma cor
     public boolean temAMesmaCorQue(Peca umaPeca){
         return this.bBrancas == umaPeca.bBrancas;
     }
     
-    public Posicao getPosicaoPeca(){
-        if(this.foiClicada(pPosicao)){
-            return this.pPosicao; 
-        }
-        
-        return null;
-        
-    }
-/*
-    public void setTabuleiro(Tabuleiro aTabuleiro){
-        this.tTabuleiro = aTabuleiro;
-    }
-*/
-    public void autoDesenho(Tabuleiro tTabuleiro){
-        iImage.paintIcon(tTabuleiro, (Graphics2D)tTabuleiro.getGraphics(),
-                         pPosicao.getColuna() * Consts.SIZE, pPosicao.getLinha() * Consts.SIZE);        
-    }
+    // Funcao auxiliar que retorna se peca foi selecionada
     public boolean foiClicada(Posicao aPosicao){
         return this.pPosicao.igual(aPosicao);
     }
     
-    /*
-    public void destaquePeca(Tabuleiro tTabuleiro, Posicao aPosicao){
-        if(foiClicada(aPosicao)){
-            tTabuleiro.destacarPosicao(this.pPosicao);   
-        }  
+    // Funcao auxiliar que retorna posicao da peca
+    public Posicao getPosicaoPeca(){
+        if(this.foiClicada(pPosicao)){
+            return this.pPosicao; 
+        }
+        return null;
     }
-    */
 
-    
-    
-    public abstract boolean setPosicao(Posicao umaPosicao, Tabuleiro umTabuleiro);
+    // Funcao auxiliar que desenha a peca
+    public void autoDesenho(Tabuleiro tTabuleiro){
+        iImage.paintIcon(tTabuleiro, (Graphics2D)tTabuleiro.getGraphics(),
+                         pPosicao.getColuna() * Consts.SIZE, pPosicao.getLinha() * Consts.SIZE);        
+    }
+
 }
